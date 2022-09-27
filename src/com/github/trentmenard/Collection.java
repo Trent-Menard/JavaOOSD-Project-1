@@ -76,7 +76,33 @@ public class Collection {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    // If serialization were a concern, a better way to do this would be to call
+    // the .toString() method, but I wish to maintain its current format.
+    public void saveToFile(String name) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(name))) {
+            StringBuilder sb = new StringBuilder();
+
+            // Write column headers
+            writer.write("week\tcategory\tweekly_rank\tshow_title\tseason_title\tweekly_hours_viewed\tis_purged\n");
+
+            for (WeeklyShow s : this.weeklyShows){
+                sb.append(s.getWeek()).append("\t")
+                        .append(s.getCategory()).append("\t")
+                        .append(s.getWeeklyRank()).append("\t")
+                        .append(s.getShowTitle()).append("\t")
+                        .append(s.getSeasonTitle()).append("\t")
+                        .append(s.getWeeklyHoursViewed()).append("\t")
+                        .append(s.getCumulativeWeeksInTop10()).append("\t")
+                        .append(s.getIsPurged()).append("\n");
+                writer.write(sb.toString());
+                sb = new StringBuilder();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

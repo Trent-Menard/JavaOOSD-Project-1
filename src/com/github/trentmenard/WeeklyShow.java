@@ -1,9 +1,5 @@
 package com.github.trentmenard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class WeeklyShow {
     private String week;
     private String category;
@@ -45,7 +41,6 @@ public class WeeklyShow {
     public boolean getIsPurged() { return isPurged; }
 
     public void setWeek(String week) { this.week = week; }
-
     public void setCategory(String category) { this.category = category; }
     public void setWeeklyRank(int weeklyRank) { this.weeklyRank = weeklyRank; }
     public void setShowTitle(String showTitle) { this.showTitle = showTitle; }
