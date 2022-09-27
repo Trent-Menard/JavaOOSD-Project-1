@@ -29,7 +29,6 @@ public class Main {
         showCollection.add(newShowManualEntry);
 
         // TODO: 9/26/2022 Modify purge() to purge EACH occurrence by TITLE.
-        // TODO: 9/26/2022 Fix reader off by first digit.
 
         // Test random show suggestion
         System.out.println("\nRandom show recommendation: " + showCollection.getRandomSuggestion().getShowTitle());
@@ -42,11 +41,11 @@ public class Main {
 
         // Test show unpurge
         initiallyEmpty.setIsPurged(false);
-        System.out.println(initiallyEmpty.getShowTitle() + " is purged: " + initiallyEmpty.getIsPurged());
+        System.out.println("\n" + initiallyEmpty.getShowTitle() + " is purged: " + initiallyEmpty.getIsPurged());
 
         // Test show purge (placed after unpurge to shows in txt file)
         initiallyEmpty.setIsPurged(true);
-        System.out.println("\n" + initiallyEmpty.getShowTitle() + " is purged: " + initiallyEmpty.getIsPurged());
+        System.out.println(initiallyEmpty.getShowTitle() + " is purged: " + initiallyEmpty.getIsPurged());
 
         showCollection.saveToFile("test.txt");
     }
