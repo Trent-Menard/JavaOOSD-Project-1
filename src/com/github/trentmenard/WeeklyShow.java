@@ -6,7 +6,7 @@ public class WeeklyShow {
     private int weeklyRank;
     private String showTitle;
     private String seasonTitle;
-    private double weeklyHoursViewed;
+    private int weeklyHoursViewed;
     private int cumulativeWeeksInTop10;
     private boolean isPurged;
 
@@ -21,7 +21,7 @@ public class WeeklyShow {
     }
 
     public WeeklyShow(String week, String category, int weeklyRank, String showTitle,
-                      String seasonTitle, double weeklyHoursViewed, int cumulativeWeeksInTop10) {
+                      String seasonTitle, int weeklyHoursViewed, int cumulativeWeeksInTop10) {
         this.week = week;
         this.category = category;
         this.weeklyRank = weeklyRank;
@@ -36,7 +36,7 @@ public class WeeklyShow {
     public int getWeeklyRank() { return weeklyRank; }
     public String getShowTitle() { return showTitle; }
     public String getSeasonTitle() { return seasonTitle; }
-    public double getWeeklyHoursViewed() { return weeklyHoursViewed; }
+    public int getWeeklyHoursViewed() { return weeklyHoursViewed; }
     public int getCumulativeWeeksInTop10() { return cumulativeWeeksInTop10; }
     public boolean getIsPurged() { return isPurged; }
 
@@ -45,7 +45,7 @@ public class WeeklyShow {
     public void setWeeklyRank(int weeklyRank) { this.weeklyRank = weeklyRank; }
     public void setShowTitle(String showTitle) { this.showTitle = showTitle; }
     public void setSeasonTitle(String seasonTitle) { this.seasonTitle = seasonTitle; }
-    public void setWeeklyHoursViewed(double weeklyHoursViewed) { this.weeklyHoursViewed = weeklyHoursViewed; }
+    public void setWeeklyHoursViewed(int weeklyHoursViewed) { this.weeklyHoursViewed = weeklyHoursViewed; }
     public void setCumulativeWeeksInTop10(int cumulativeWeeksInTop10) { this.cumulativeWeeksInTop10 = cumulativeWeeksInTop10 ;}
     public void setIsPurged(boolean isPurged) { this.isPurged = isPurged; }
 
