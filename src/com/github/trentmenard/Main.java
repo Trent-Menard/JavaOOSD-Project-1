@@ -33,6 +33,7 @@ public class Main {
         System.out.println("\nShows by date: 2022-09-18");
         showCollection.getShows("2022-09-18")
                 .forEach(s -> System.out.println(s.getShowTitle()));
+        System.out.println();
 
         showCollection.saveToFile("all-weeks-global-updated.txt");
 
@@ -48,6 +49,7 @@ public class Main {
         showCollection2.setIsPurged("Ozark", false);
         showCollection2.getShowsByName("Ozark")
                 .forEach(s -> System.out.println(s.getSeasonTitle() + " is purged: " + s.getIsPurged()));
+        System.out.println();
 
         // Test show purge (placed after unpurge to show in txt file)
         showCollection2.setIsPurged("Ozark", true);
