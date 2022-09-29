@@ -10,10 +10,10 @@
     - Choose extracted folder
 
 Importing into Eclipse:
-![EclipseImport](https://github.com/Trent-Menard/NetflixBackendRecreation/blob/master/Eclipse%201%20Import.png)
+![EclipseImport](https://github.com/Trent-Menard/NetflixBackendRecreation/blob/master/Eclipse%20Import.png)
 
 Viewing Source Code:
-![ViewingSourceCode](https://github.com/Trent-Menard/NetflixBackendRecreation/blob/master/Viewing%201%20Source%201%20Code.png)
+![ViewingSourceCode](https://github.com/Trent-Menard/NetflixBackendRecreation/blob/master/Viewing%20Source%20Code.png)
 
 UML Diagram:
 ![UMLDiagram](https://github.com/Trent-Menard/NetflixBackendRecreation/blob/master/Project%201%20UML.png)
