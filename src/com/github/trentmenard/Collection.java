@@ -104,4 +104,8 @@ public class Collection {
                 "weeklyShows=" + weeklyShows +
                 '}';
     }
+
+    public List<WeeklyShow> getWeeklyShows() {
+        return Collections.unmodifiableList(weeklyShows);
+    }
 }
