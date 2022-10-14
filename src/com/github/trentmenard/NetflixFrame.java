@@ -8,11 +8,11 @@ public class NetflixFrame {
     public NetflixFrame() {
         mainFrame = new JFrame("Netflix");
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        mainFrame.setSize(getHalfScreenSize());
+        mainFrame.setSize(getHalfScreenSize());
         // Center the JFrame
         mainFrame.setLocationRelativeTo(null);
         // Size & fit window relative to components
-        mainFrame.pack();
+//        mainFrame.pack();
         mainFrame.setVisible(true);
     }
 

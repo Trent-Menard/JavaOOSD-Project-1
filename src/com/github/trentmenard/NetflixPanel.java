@@ -16,12 +16,10 @@ public class NetflixPanel extends NetflixFrame{
         super.getMainFrame().setContentPane(netflixPanel);
         super.getMainFrame().setBackground(new Color(224, 225, 221));
 
-        Collection test = new Collection();
+        ShowCollection<?> test = new ShowCollection<>();
         test.readFromFile("all-weeks-global.tsv");
 
-        for (WeeklyShow show : test.getWeeklyShows())
-            comboBox1.addItem(show.getShowTitle());
-
+        test.showCollection.forEach(s -> System.out.println(s.getShowTitle() + " : " + s.getClass().getSimpleName()));
 
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
