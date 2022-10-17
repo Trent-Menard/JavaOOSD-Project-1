@@ -1,11 +1,12 @@
 package com.github.trentmenard;
 
-public class TVShow<S> extends WeeklyShow<S> {
+public class TVShow extends WeeklyShow {
     private String seasonTitle;
-    private String language;
-    public TVShow(String week, String category, String language, int weeklyRank, String showTitle, String seasonTitle, int weeklyHoursViewed, int cumulativeWeeksInTop10) {
-        super(week, category, weeklyRank, showTitle, seasonTitle, weeklyHoursViewed, cumulativeWeeksInTop10);
+    public TVShow(String week, String category, int weeklyRank, String showTitle, String seasonTitle, String language, int weeklyHoursViewed, int cumulativeWeeksInTop10) {
+        super(week, category, weeklyRank, showTitle, language, weeklyHoursViewed, cumulativeWeeksInTop10);
         this.seasonTitle = seasonTitle;
-        this.language = language;
     }
+
+    public void setSeasonTitle(String seasonTitle) { this.seasonTitle = seasonTitle; }
+    public String getSeasonTitle() { return seasonTitle; }
 }

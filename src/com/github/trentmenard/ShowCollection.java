@@ -5,13 +5,30 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class ShowCollection<T extends WeeklyShow<T>> extends WeeklyShow<T> {
+public class ShowCollection {
     // Parent List containing TV & Movie objects.
-    public final List<WeeklyShow<?>> showCollection = new ArrayList<>();
-    private List<TVShow<T>> tvShows = new ArrayList<>();
-    private List<Movie<T>> movies = new ArrayList<>();
+    private List<WeeklyShow> allShows;
+    private List<Movie> movies;
+    private List<TVShow> tvShows;
+    private Random rand;
+    public ShowCollection() {
+        this.allShows = new ArrayList<>();
+        this.movies = new ArrayList<>();
+        this.tvShows = new ArrayList<>();
+        this.rand = new Random();
+    }
 
+    public void add(Movie movie){
+        this.movies.add(movie);
+        this.allShows.add(movie);
+    }
+
+    public void add(TVShow tvShow){
+        this.tvShows.add(tvShow);
+        this.allShows.add(tvShow);
+    }
     public void readFromFile(String file) {
         // Try-with-resources() auto-closes used resources.
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -21,26 +38,80 @@ public class ShowCollection<T extends WeeklyShow<T>> extends WeeklyShow<T> {
             reader.lines()
                     .skip(1)
                     .map(s -> s.split("\t"))
-                    .toList().forEach(s -> this.convertToTypeAndAdd(s[0], s[1], Integer.parseInt(s[2]), s[3], s[4], Integer.parseInt(s[5]), Integer.parseInt(s[6])));
+                    .forEach(this::add);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void convertToTypeAndAdd(String wk, String cat, int rnk, String showTTL, String seasonTTL, int hrsVwd, int top10) {
+    private void add(String[] show){
+        String wk = show[0];
+        String cat = show[1];
+        int rnk = Integer.parseInt(show[2]);
+        String showTTL = show[3];
+        String seasonTTL = show[4];
+        int hrsVwd = Integer.parseInt(show[5]);
+        int top10 = Integer.parseInt(show[6]);
+        String lang = getLanguage(show[3]);
 
-        String lang = getLanguage(showTTL);
-
-        // If an entry's 'seasonTitle' is 'N/A' then it's a Movie, not TV Show.
-        if (seasonTTL.equals("N/A"))
-            this.showCollection.add(new Movie<T>(wk, cat, lang, rnk, showTTL, hrsVwd, top10));
-        else
-            this.showCollection.add(new TVShow<T>(wk, cat, lang, rnk, showTTL, seasonTTL, hrsVwd, top10));
+//      If an entry's 'seasonTitle' is 'N/A' then it's a Movie, not TV Show.
+        if (seasonTTL.equals("N/A")){
+            Movie movie = new Movie(wk, cat, rnk, showTTL, lang, hrsVwd, top10);
+            this.movies.add(movie);
+            this.allShows.add(movie);
+        } else {
+            TVShow tvShow = new TVShow(wk, cat, rnk, showTTL, seasonTTL, lang, hrsVwd, top10);
+            this.tvShows.add(tvShow);
+            this.allShows.add(tvShow);
+        }
     }
-
     private String getLanguage(String show) {
         // Regex matches between parenthesis in 'category' (English or Non-English)
         return show.lines()
                 .filter(s -> s.matches("\\(([^()]+)\\)"))
                 .limit(1).toString();
+    }
+
+    public List<WeeklyShow> getAllShows() {
+        return allShows;
+    }
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public List<TVShow> getTvShows() {
+        return tvShows;
+    }
+
+    public WeeklyShow getRandomSuggestion(){
+        return this.allShows.get(rand.nextInt(this.allShows.size()));
+    }
+
+    // Prediction based on highest weekly hours viewed
+    public WeeklyShow getPredictiveSuggestion(WeeklyShow basedOn){
+        rand = new Random();
+
+        // Remove unpurged shows & shows with the same name
+        List<WeeklyShow> res = this.allShows.stream()
+                .filter(s -> !s.isPurged() && !s.getShowTitle().equalsIgnoreCase(basedOn.getShowTitle()))
+                .toList();
+
+        // From previous, list of shows having a higher weeklyHoursViewed than originally provided
+        List<WeeklyShow> opt = res.stream()
+                .filter(s -> s.getWeeklyHoursViewed() >= basedOn.getWeeklyHoursViewed()).toList();
+
+        // If shows pass second test, recommend from there
+        // Otherwise, only recommend shows meeting criteria 1
+        return opt.size() >= 1 ? opt.get(rand.nextInt(opt.size())) : res.get(rand.nextInt(res.size()));
+    }
+
+    public List<WeeklyShow> getPredictiveSuggestions(List<WeeklyShow> basedOn) {
+        return basedOn.stream()
+                .map(this::getPredictiveSuggestion).toList();
+    }
+
+    public List<WeeklyShow> getShows(String nameOrDate) {
+        return this.allShows.stream()
+                .filter(s -> s.getShowTitle().equalsIgnoreCase(nameOrDate))
+                .toList();
     }
 }

@@ -10,16 +10,19 @@ public class NetflixPanel extends NetflixFrame{
     private JButton addShowButton;
     private JTextField searchTextField;
     private JComboBox<String> comboBox1;
+    private JRadioButton filterNoneRadioButton;
+    private JRadioButton filterMoviesRadioButton;
+    private JRadioButton filterTVShowsRadioButton;
+    private ButtonGroup filterButtonGroup = new ButtonGroup();
 
-    public NetflixPanel() {
+    public NetflixPanel(ShowCollection showCollection) {
         super();
         super.getMainFrame().setContentPane(netflixPanel);
         super.getMainFrame().setBackground(new Color(224, 225, 221));
 
-        ShowCollection<?> test = new ShowCollection<>();
-        test.readFromFile("all-weeks-global.tsv");
-
-        test.showCollection.forEach(s -> System.out.println(s.getShowTitle() + " : " + s.getClass().getSimpleName()));
+        filterButtonGroup.add(filterNoneRadioButton);
+        filterButtonGroup.add(filterMoviesRadioButton);
+        filterButtonGroup.add(filterTVShowsRadioButton);
 
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
@@ -28,6 +31,7 @@ public class NetflixPanel extends NetflixFrame{
                 System.out.println(e.getKeyChar());
             }
         });
+
     }
 
     public JPanel getNetflixPanel() {
