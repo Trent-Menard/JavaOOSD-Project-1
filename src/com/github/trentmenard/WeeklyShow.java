@@ -37,4 +37,18 @@ public abstract class WeeklyShow {
     public void setWeeklyHoursViewed(int weeklyHoursViewed) { this.weeklyHoursViewed = weeklyHoursViewed; }
     public void setCumulativeWeeksInTop10(int cumulativeWeeksInTop10) { this.cumulativeWeeksInTop10 = cumulativeWeeksInTop10 ;}
     public void setPurged(boolean purged) { isPurged = purged; }
+
+    @Override
+    public String toString() {
+        return "WeeklyShow{" +
+                "week='" + week + '\'' +
+                ", category='" + category + '\'' +
+                ", weeklyRank=" + weeklyRank +
+                ", showTitle='" + showTitle + '\'' +
+                ", language='" + language + '\'' +
+                ", weeklyHoursViewed=" + weeklyHoursViewed +
+                ", cumulativeWeeksInTop10=" + cumulativeWeeksInTop10 +
+                ", isPurged=" + isPurged +
+                '}';
+    }
 }

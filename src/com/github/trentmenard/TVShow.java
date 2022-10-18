@@ -9,4 +9,11 @@ public class TVShow extends WeeklyShow {
 
     public void setSeasonTitle(String seasonTitle) { this.seasonTitle = seasonTitle; }
     public String getSeasonTitle() { return seasonTitle; }
+
+    @Override
+    public String toString() {
+        return "TVShow{" +
+                "seasonTitle='" + seasonTitle + '\'' +
+                '}';
+    }
 }

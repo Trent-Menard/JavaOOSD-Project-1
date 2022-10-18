@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ShowCollection {
     // Parent List containing TV & Movie objects.
@@ -51,7 +53,7 @@ public class ShowCollection {
         String seasonTTL = show[4];
         int hrsVwd = Integer.parseInt(show[5]);
         int top10 = Integer.parseInt(show[6]);
-        String lang = getLanguage(show[3]);
+        String lang = getLanguage(cat);
 
 //      If an entry's 'seasonTitle' is 'N/A' then it's a Movie, not TV Show.
         if (seasonTTL.equals("N/A")){
@@ -66,14 +68,20 @@ public class ShowCollection {
     }
     private String getLanguage(String show) {
         // Regex matches between parenthesis in 'category' (English or Non-English)
-        return show.lines()
-                .filter(s -> s.matches("\\(([^()]+)\\)"))
-                .limit(1).toString();
+        Pattern pat = Pattern.compile("\\(([^()]+)\\)");
+        Matcher mat = pat.matcher(show);
+        boolean found = mat.find();
+        if (found)
+            // Remove () from capture group.
+            return mat.group().replaceAll("[\\(\\)]", "");
+        else
+            return "Unknown";
     }
 
     public List<WeeklyShow> getAllShows() {
         return allShows;
     }
+
     public List<Movie> getMovies() {
         return movies;
     }
@@ -113,5 +121,15 @@ public class ShowCollection {
         return this.allShows.stream()
                 .filter(s -> s.getShowTitle().equalsIgnoreCase(nameOrDate))
                 .toList();
+    }
+
+    @Override
+    public String toString() {
+        return "ShowCollection{" +
+                "allShows=" + allShows +
+                ", movies=" + movies +
+                ", tvShows=" + tvShows +
+                ", rand=" + rand +
+                '}';
     }
 }
