@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,8 +17,41 @@ public class NetflixPanel {
     private JRadioButton filterMoviesRadioButton;
     private JRadioButton filterTVShowsRadioButton;
     private JButton addMovieButton;
+    private JPasswordField passwordField1;
+    private JProgressBar progressBar1;
+    private JComboBox<WeeklyShow> comboBox2;
+    private JButton doneButton;
     private ButtonGroup filterButtonGroup = new ButtonGroup();
+    private ShowCollection showCollection;
+    private String query = "";
+    private Timer timer;
     public NetflixPanel(ShowCollection showCollection) {
+        this.showCollection = showCollection;
+        comboBox2.setVisible(false);
+        doneButton.setVisible(false);
+
+        // Needed more room for the GIF so just created a temp JFrame ;).
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("Patrick.GIF"));
+        JFrame frm = new JFrame("I ran out of room, lol.");
+        JLabel jlbl = new JLabel();
+        jlbl.setIcon(icon);
+        frm.setContentPane(jlbl);
+        frm.pack();
+        frm.setVisible(true);
+
+        timer = new Timer(0, e -> {
+            progressBar1.setValue(progressBar1.getValue() + 10);
+            if (progressBar1.getValue() == 100)
+                timer.stop();
+        });
+
+        progressBar1.setToolTipText("Loading...");
+
+        timer.start();
+        timer.setDelay(1000);
+
+        passwordField1.setToolTipText("Enter password:");
+
         netflixPanel.setBackground(new Color(224, 225, 221));
 
         showCollection.getAllShows().forEach(e -> comboBox1.addItem(e));
@@ -25,41 +59,28 @@ public class NetflixPanel {
         filterButtonGroup.add(filterNoneRadioButton);
         filterButtonGroup.add(filterMoviesRadioButton);
         filterButtonGroup.add(filterTVShowsRadioButton);
-
         // By default, show Movies & TV Shows combined.
         filterButtonGroup.setSelected(filterNoneRadioButton.getModel(), true);
+        comboBox1.setMaximumRowCount(25);
 
-        // Not the best way of doing it but seems to work for now...
-        StringBuilder query = new StringBuilder();
-        searchTextField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                super.keyTyped(e);
-                query.append(e.getKeyChar());
-                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
-                    query.deleteCharAt(query.length() - 1);
-            }
-        });
+        this.registerListeners();
 
-        addTVShowButton.addActionListener(e -> {
-            TVShow res = getNewTVShowUserInput();
-            showCollection.add(res);
-            comboBox1.addItem(res);
-        });
+        doneButton.addActionListener(e -> {
+            comboBox1.setEditable(false);
 
-        comboBox1.addActionListener(e -> {
             Object selected = comboBox1.getSelectedItem();
-                TVShow res;
-                if (selected instanceof TVShow)
-                    res = (TVShow) selected;
-            // TODO: 10/17/2022 Menu to edit object.
+
+            if (selected instanceof TVShow res){
+                comboBox1.addItem(new TVShow(res.getWeek(), res.getCategory(), res.getWeeklyRank(), res.getShowTitle(), res.getSeasonTitle(), res.getLanguage(), res.getWeeklyHoursViewed(), res.getCumulativeWeeksInTop10()));
+            }
+
+            System.out.println(comboBox1.getSelectedItem());
         });
     }
     public JPanel getNetflixPanel() {
         return netflixPanel;
     }
-
-    private TVShow getNewTVShowUserInput(){
+    private WeeklyShow getUserInput(boolean isTVShow){
         // User Input: Week
         // TODO: 10/17/2022 Regex invalid date format check?
         String week = JOptionPane.showInputDialog("Week (YYYY-DD-MM):");
@@ -88,8 +109,11 @@ public class NetflixPanel {
         // User Input: Show Title
         String showTitle = JOptionPane.showInputDialog("Show Title:");
 
-        // User Input: Season Title
-        String seasonTitle = JOptionPane.showInputDialog("Season Title:");
+        String seasonTitle = "";
+        if (isTVShow){
+            // User Input: Season Title
+            seasonTitle = JOptionPane.showInputDialog("Season Title:");
+        }
 
         // Extraction: Language
         String language = "TBD";
@@ -137,6 +161,107 @@ public class NetflixPanel {
             System.exit(0);
         else
             isPurged = res == 0;
-        return new TVShow(week, category, weeklyRank, showTitle, seasonTitle, language, weeklyHoursViewed, cumulativeWeeksInTop10);
+
+        if (isTVShow)
+            return new TVShow(week, category, weeklyRank, showTitle, seasonTitle, language, weeklyHoursViewed, cumulativeWeeksInTop10);
+        else
+            return new Movie(week, category, weeklyRank, showTitle, language, weeklyHoursViewed, cumulativeWeeksInTop10);
+    }
+    private void registerListeners(){
+        searchTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
+                    if (query.length() > 0)
+                        query = query.substring(0, query.length() - 1);
+                    else query = "";
+                else
+                    query += e.getKeyChar();
+
+                comboBox1.removeAllItems();
+
+                if (filterButtonGroup.isSelected(filterNoneRadioButton.getModel())){
+                    List<WeeklyShow> shows = showCollection.getAllShows().stream()
+                            .filter(s -> s.getShowTitle()
+                                    .toLowerCase()
+                                    .startsWith(query.toLowerCase()))
+                            .toList();
+
+                    shows.forEach(t -> comboBox1.addItem(t));
+
+                } else if (filterButtonGroup.isSelected(filterMoviesRadioButton.getModel())){
+                    List<Movie> movies = showCollection.getMovies().stream()
+                            .filter(s -> s.getShowTitle()
+                                    .toLowerCase()
+                                    .startsWith(query.toLowerCase()))
+                            .toList();
+
+                    movies.forEach(t -> comboBox1.addItem(t));
+
+                } else if (filterButtonGroup.isSelected(filterTVShowsRadioButton.getModel())){
+                    List<TVShow> tvShows = showCollection.getTvShows().stream()
+                            .filter(s -> s.getShowTitle()
+                                    .toLowerCase()
+                                    .startsWith(query.toLowerCase()))
+                            .toList();
+
+                    tvShows.forEach(t -> comboBox1.addItem(t));
+                }
+            }
+        });
+
+        addTVShowButton.addActionListener(e -> {
+            TVShow res = (TVShow) getUserInput(true);
+            showCollection.add(res);
+            comboBox1.addItem(res);
+        });
+
+        addMovieButton.addActionListener(e -> {
+            Movie res = (Movie) getUserInput(false);
+            showCollection.add(res);
+            comboBox1.addItem(res);
+        });
+
+        comboBox1.addActionListener(e -> {
+            Object selected = comboBox1.getSelectedItem();
+
+            if (selected instanceof TVShow res){
+                updateTVShow(res);
+                comboBox1.removeItem(res);
+            }
+            else if (selected instanceof Movie res){
+                updateMovie(res);
+            }
+            // TODO: 10/17/2022 Menu to edit object.
+        });
+
+        filterNoneRadioButton.addActionListener(e -> {
+            comboBox1.removeAllItems();
+            showCollection.getAllShows().forEach(s -> comboBox1.addItem(s));
+        });
+
+        filterMoviesRadioButton.addActionListener(e -> {
+            comboBox1.removeAllItems();
+            showCollection.getMovies().forEach(s -> comboBox1.addItem(s));
+        });
+
+        filterTVShowsRadioButton.addActionListener(e -> {
+            comboBox1.removeAllItems();
+            showCollection.getTvShows().forEach(s -> comboBox1.addItem(s));
+        });
+
+    }
+
+    private TVShow updateTVShow(TVShow tvShow){
+        comboBox2.addItem(tvShow);
+        comboBox2.setEditable(true);
+        return null;
+    }
+
+    private Movie updateMovie(Movie movie){
+        comboBox1.setEditable(true);
+        doneButton.setVisible(true);
+        return null;
     }
 }

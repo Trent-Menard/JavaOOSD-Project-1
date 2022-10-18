@@ -1,5 +1,5 @@
 package com.github.trentmenard;
-
+// Trent Menard
 import javax.swing.*;
 
 public class Main {
