@@ -28,6 +28,7 @@ public class NetflixPanel {
     public NetflixPanel(ShowCollection showCollection) {
         this.showCollection = showCollection;
         comboBox2.setVisible(false);
+        doneButton = new JButton();
         doneButton.setVisible(false);
 
         // Needed more room for the GIF so just created a temp JFrame ;).
