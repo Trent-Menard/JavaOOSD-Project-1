@@ -1,5 +1,8 @@
 package com.github.trentmenard;
 
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -25,6 +28,7 @@ public class NetflixPanel {
     private ShowCollection showCollection;
     private String query = "";
     private Timer timer;
+
     public NetflixPanel(ShowCollection showCollection) {
         this.showCollection = showCollection;
         comboBox2.setVisible(false);
@@ -32,7 +36,7 @@ public class NetflixPanel {
         doneButton.setVisible(false);
 
         // Needed more room for the GIF so just created a temp JFrame ;).
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("Patrick.GIF"));
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("Patrick.gif"));
         JFrame frm = new JFrame("I ran out of room, lol.");
         JLabel jlbl = new JLabel();
         jlbl.setIcon(icon);
@@ -71,17 +75,19 @@ public class NetflixPanel {
 
             Object selected = comboBox1.getSelectedItem();
 
-            if (selected instanceof TVShow res){
+            if (selected instanceof TVShow res) {
                 comboBox1.addItem(new TVShow(res.getWeek(), res.getCategory(), res.getWeeklyRank(), res.getShowTitle(), res.getSeasonTitle(), res.getLanguage(), res.getWeeklyHoursViewed(), res.getCumulativeWeeksInTop10()));
             }
 
             System.out.println(comboBox1.getSelectedItem());
         });
     }
+
     public JPanel getNetflixPanel() {
         return netflixPanel;
     }
-    private WeeklyShow getUserInput(boolean isTVShow){
+
+    private WeeklyShow getUserInput(boolean isTVShow) {
         // User Input: Week
         // TODO: 10/17/2022 Regex invalid date format check?
         String week = JOptionPane.showInputDialog("Week (YYYY-DD-MM):");
@@ -89,20 +95,20 @@ public class NetflixPanel {
 
         // User Input: Category
         String category = "TBD";
-        try{
+        try {
             String[] cats = {"Films (English)", "Films (Non-English)", "TV (English)", "TV (Non-English)"};
             category = JOptionPane.showInputDialog(null, "Select a category:", "Category", JOptionPane.QUESTION_MESSAGE, null, cats, null).toString();
-        }catch (NullPointerException ignored){
+        } catch (NullPointerException ignored) {
             // If the user presses "Cancel"
             System.exit(0);
         }
 
         // User Input: Weekly Rank
         int weeklyRank = -1;
-        try{
+        try {
             String[] cats = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",};
             weeklyRank = Integer.parseInt(JOptionPane.showInputDialog(null, "Select Weekly Rank:", "Weekly Rank", JOptionPane.QUESTION_MESSAGE, null, cats, null).toString());
-        }catch (NullPointerException ignored){
+        } catch (NullPointerException ignored) {
             // If the user presses "Cancel"
             System.exit(0);
         }
@@ -111,7 +117,7 @@ public class NetflixPanel {
         String showTitle = JOptionPane.showInputDialog("Show Title:");
 
         String seasonTitle = "";
-        if (isTVShow){
+        if (isTVShow) {
             // User Input: Season Title
             seasonTitle = JOptionPane.showInputDialog("Season Title:");
         }
@@ -135,7 +141,7 @@ public class NetflixPanel {
             try {
                 weeklyHoursViewed = Integer.parseInt(JOptionPane.showInputDialog("Enter Weekly Hours Viewed:"));
                 valid = true;
-            }catch (NumberFormatException ignored){
+            } catch (NumberFormatException ignored) {
                 JOptionPane.showMessageDialog(null, "Format as an integer.\nExample: 12345", "Invalid Format", JOptionPane.WARNING_MESSAGE);
                 valid = false;
             }
@@ -147,7 +153,7 @@ public class NetflixPanel {
             try {
                 cumulativeWeeksInTop10 = Integer.parseInt(JOptionPane.showInputDialog("Cumulative Weeks In top 10:"));
                 valid = true;
-            }catch (NumberFormatException ignored){
+            } catch (NumberFormatException ignored) {
                 JOptionPane.showMessageDialog(null, "Format as an integer.\nExample: 12345", "Invalid Format", JOptionPane.WARNING_MESSAGE);
                 valid = false;
             }
@@ -168,7 +174,8 @@ public class NetflixPanel {
         else
             return new Movie(week, category, weeklyRank, showTitle, language, weeklyHoursViewed, cumulativeWeeksInTop10);
     }
-    private void registerListeners(){
+
+    private void registerListeners() {
         searchTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -182,7 +189,7 @@ public class NetflixPanel {
 
                 comboBox1.removeAllItems();
 
-                if (filterButtonGroup.isSelected(filterNoneRadioButton.getModel())){
+                if (filterButtonGroup.isSelected(filterNoneRadioButton.getModel())) {
                     List<WeeklyShow> shows = showCollection.getAllShows().stream()
                             .filter(s -> s.getShowTitle()
                                     .toLowerCase()
@@ -191,7 +198,7 @@ public class NetflixPanel {
 
                     shows.forEach(t -> comboBox1.addItem(t));
 
-                } else if (filterButtonGroup.isSelected(filterMoviesRadioButton.getModel())){
+                } else if (filterButtonGroup.isSelected(filterMoviesRadioButton.getModel())) {
                     List<Movie> movies = showCollection.getMovies().stream()
                             .filter(s -> s.getShowTitle()
                                     .toLowerCase()
@@ -200,7 +207,7 @@ public class NetflixPanel {
 
                     movies.forEach(t -> comboBox1.addItem(t));
 
-                } else if (filterButtonGroup.isSelected(filterTVShowsRadioButton.getModel())){
+                } else if (filterButtonGroup.isSelected(filterTVShowsRadioButton.getModel())) {
                     List<TVShow> tvShows = showCollection.getTvShows().stream()
                             .filter(s -> s.getShowTitle()
                                     .toLowerCase()
@@ -227,11 +234,10 @@ public class NetflixPanel {
         comboBox1.addActionListener(e -> {
             Object selected = comboBox1.getSelectedItem();
 
-            if (selected instanceof TVShow res){
+            if (selected instanceof TVShow res) {
                 updateTVShow(res);
                 comboBox1.removeItem(res);
-            }
-            else if (selected instanceof Movie res){
+            } else if (selected instanceof Movie res) {
                 updateMovie(res);
             }
             // TODO: 10/17/2022 Menu to edit object.
@@ -254,15 +260,75 @@ public class NetflixPanel {
 
     }
 
-    private TVShow updateTVShow(TVShow tvShow){
+    private TVShow updateTVShow(TVShow tvShow) {
         comboBox2.addItem(tvShow);
         comboBox2.setEditable(true);
         return null;
     }
 
-    private Movie updateMovie(Movie movie){
+    private Movie updateMovie(Movie movie) {
         comboBox1.setEditable(true);
         doneButton.setVisible(true);
         return null;
     }
+
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
+     * >>> IMPORTANT!! <<<
+     * DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        netflixPanel = new JPanel();
+        netflixPanel.setLayout(new GridLayoutManager(7, 3, new Insets(0, 0, 0, 0), -1, -1));
+        addTVShowButton = new JButton();
+        addTVShowButton.setText("Add TV Show");
+        netflixPanel.add(addTVShowButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        filterNoneRadioButton = new JRadioButton();
+        filterNoneRadioButton.setText("Filter None");
+        netflixPanel.add(filterNoneRadioButton, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        filterTVShowsRadioButton = new JRadioButton();
+        filterTVShowsRadioButton.setText("Filter TV Shows");
+        netflixPanel.add(filterTVShowsRadioButton, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        comboBox1 = new JComboBox();
+        netflixPanel.add(comboBox1, new GridConstraints(4, 0, 2, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchTextField = new JTextField();
+        searchTextField.setText("");
+        searchTextField.setToolTipText("Search...");
+        netflixPanel.add(searchTextField, new GridConstraints(1, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        addMovieButton = new JButton();
+        addMovieButton.setText("Add Movie");
+        netflixPanel.add(addMovieButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("Select a show to view edit options.");
+        netflixPanel.add(label1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        filterMoviesRadioButton = new JRadioButton();
+        filterMoviesRadioButton.setText("Filter Movies");
+        netflixPanel.add(filterMoviesRadioButton, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        passwordField1 = new JPasswordField();
+        netflixPanel.add(passwordField1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        progressBar1 = new JProgressBar();
+        netflixPanel.add(progressBar1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        comboBox2 = new JComboBox();
+        netflixPanel.add(comboBox2, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        doneButton = new JButton();
+        doneButton.setText("Done");
+        netflixPanel.add(doneButton, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return netflixPanel;
+    }
+
 }

@@ -1,12 +1,13 @@
 package com.github.trentmenard;
 // Trent Menard
+
 import javax.swing.*;
 
 public class Main {
 
     public static void main(String[] args) {
         ShowCollection showCollection = new ShowCollection();
-        showCollection.readFromFile("all-weeks-global.tsv");
+        showCollection.readFromFile();
 
         JFrame netflixFrame = new JFrame("Netflix");
         netflixFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

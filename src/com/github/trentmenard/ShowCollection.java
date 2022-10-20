@@ -1,7 +1,5 @@
 package com.github.trentmenard;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +29,35 @@ public class ShowCollection {
         this.tvShows.add(tvShow);
         this.allShows.add(tvShow);
     }
-    public void readFromFile(String file) {
-        // Try-with-resources() auto-closes used resources.
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            // Read and map lines using a Stream & split field variables (defined in WeeklyShow) by tabs (\t)
-            // The first line is column headers, so we can discard (skip). Then, determine its type (TV Show / Movie) &
-            // and add it to showCollection.
-            reader.lines()
-                    .skip(1)
-                    .map(s -> s.split("\t"))
-                    .forEach(this::add);
+    public void readFromFile() {
+
+        byte[] read;
+
+        try {
+            read = Main.class.getClassLoader().getResource("all-weeks-global.tsv").openStream().readAllBytes();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+
+        String bytesToString = new String(read);
+
+        bytesToString.lines()
+                .skip(1)
+                .map(s -> s.split("\t"))
+                .forEach(this::add);
+
+        // Try-with-resources() auto-closes used resources.
+//        try (BufferedReader reader = new BufferedReader(new FileReader((file))) {
+//            // Read and map lines using a Stream & split field variables (defined in WeeklyShow) by tabs (\t)
+//            // The first line is column headers, so we can discard (skip). Then, determine its type (TV Show / Movie) &
+//            // and add it to showCollection.
+//            reader.lines()
+//                    .skip(1)
+//                    .map(s -> s.split("\t"))
+//                    .forEach(this::add);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
     private void add(String[] show){
         String wk = show[0];

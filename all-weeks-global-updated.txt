@@ -1,1 +1,0 @@
-week	category	weekly_rank	show_title	season_title	weekly_hours_viewed	is_purged
