@@ -4,6 +4,7 @@
     <root id="archive" name="Project 1.jar">
       <element id="module-output" name="Project 1" />
       <element id="extracted-dir" path="$APPLICATION_HOME_DIR$/lib/forms_rt.jar" path-in-jar="/" />
+      <element id="library" level="project" name="forms_rt" />
     </root>
   </artifact>
 </component>
