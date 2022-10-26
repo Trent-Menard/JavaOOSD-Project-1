@@ -2,7 +2,6 @@
 <component inherit-compiler-output="true" inheritJdk="true">
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
-	<lib name="forms_rt" scope="PROVIDED"/>
 	<levels>
 		<level name="forms_rt" value="project"/>
 	</levels>
