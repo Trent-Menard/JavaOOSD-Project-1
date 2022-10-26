@@ -8,5 +8,5 @@
     - Projects From Git (with smart import)
     - Clone URI
 
-File to read is embedded within jar at the moment - not too big of an issue b/c saving wasn't completed in original submission (nor this one, to be fair to others).
-Should time permit, I may do some modifcations to fix file I/O (though for fun; not graded :D)
+Note: Saving Shows properly wasn't completed in original submission (nor this one, to be fair to others).
+Should time permit, I may fix the file I/O (though for fun; not graded :D)

@@ -1,6 +1,9 @@
 package com.github.trentmenard;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -30,21 +33,25 @@ public class ShowCollection {
         this.allShows.add(tvShow);
     }
     public void readFromFile() {
+        Path cd = Paths.get("").toAbsolutePath();
+        Path target = cd.resolve("all-weeks-global.tsv");
 
-        byte[] read;
+        if (!(Files.exists(target))){
+            System.err.println("Error: Unable to read from file as it does not exist.\nEnsure it is saved in the same directory and titled 'all-weeks-global'.");
+            System.exit(-1);
+        }
 
         try {
-            read = Main.class.getClassLoader().getResource("all-weeks-global.tsv").openStream().readAllBytes();
+            List<String> read = Files.readAllLines(target);
+
+            read.stream()
+                    .skip(1)
+                    .map(s -> s.split("\t"))
+                    .forEach(this::add);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        String bytesToString = new String(read);
-
-        bytesToString.lines()
-                .skip(1)
-                .map(s -> s.split("\t"))
-                .forEach(this::add);
     }
 
     private void add(String[] show){
